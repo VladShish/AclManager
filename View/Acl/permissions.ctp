@@ -1,4 +1,4 @@
-<?php $disableActions = (array)Configure::read("AclManager.disable"); ?>
+<?php $groups = Configure::read('AclManager.groups');?>
 
 <div class="form">
 	<h3><?= sprintf(__("%s permissions"), $aroAlias);?></h3>
@@ -8,8 +8,14 @@
 	<table>
 		<tr>
 			<th>Action</th>
-			<?php foreach ($aros as $aro): ?>
-				<?php $aro = array_shift($aro); ?>
+			<?php foreach ($aros as $index => $aro): ?>
+				<?php
+				if (!in_array($aro['Group']['id'], $groups)) :
+					continue;
+				endif;
+
+				$aro = array_shift($aro);
+				?>
 				<th><?= h($aro[$aroDisplayField]); ?></th>
 			<?php endforeach; ?>
 		</tr>
@@ -37,10 +43,8 @@
 			<td><?= ($ident == 1 ? "<strong>" : "" ) . ($uglyIdent ? str_repeat("&nbsp;&nbsp;", $ident) : "") . h($alias) . ($ident == 1 ? "</strong>" : "" ); ?></td>
 
 			<?php foreach ($aros as $index => $aro):
-				if (!empty($disableActions[$index]) && in_array($aco['Aco']['alias'], $disableActions[$index])) :
-					$disabled = true;
-				else :
-					$disabled = false;
+				if (!in_array($aro['Group']['id'], $groups)) :
+					continue;
 				endif;
 
 				$inherit = $this->Form->value("Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}-inherit");
@@ -56,7 +60,7 @@
 				<td><?= $icon . " " . $this->Form->select(
 					"Perms." . str_replace("/", ":", $action) . ".{$aroAlias}:{$aro[$aroAlias]['id']}",
 					array(array('inherit' => __('Inherit'), 'allow' => __('Allow'), 'deny' => __('Deny'))),
-					array('empty' => __('No change'), 'value' => $value, 'disabled' => $disabled)
+					array('empty' => __('No change'), 'value' => $value)
 				);?></td>
 			<?php endforeach; ?>
 		<?php
