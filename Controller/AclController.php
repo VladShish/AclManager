@@ -90,7 +90,6 @@ class AclController extends AclManagerAppController {
 	 * Manage Permissions
 	 */
 	public function permissions() {
-
 		// Saving permissions
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$perms =  isset($this->request->data['Perms']) ? $this->request->data['Perms'] : array();
@@ -153,6 +152,7 @@ class AclController extends AclManagerAppController {
 		}
 
 		$this->request->data = array('Perms' => $perms);
+		$this->set('title_for_layout', 'Permissions');
 		$this->set('aroAlias', $Aro->alias);
 		$this->set('aroDisplayField', $Aro->displayField);
 		$this->set(compact('acos', 'aros'));
