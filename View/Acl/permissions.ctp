@@ -1,4 +1,4 @@
-<?php $groups = Configure::read('AclManager.groups');?>
+<?php $groups = (array)Configure::read('AclManager.groups');?>
 
 <div class="form">
 	<h3><?= sprintf(__("%s permissions"), $aroAlias);?></h3>
@@ -10,7 +10,7 @@
 			<th>Action</th>
 			<?php foreach ($aros as $index => $aro): ?>
 				<?php
-				if (!in_array($aro['Group']['id'], $groups)) :
+				if (!empty($groups) && !in_array($aro['Group']['id'], $groups)) :
 					continue;
 				endif;
 
@@ -43,7 +43,7 @@
 			<td><?= ($ident == 1 ? "<strong>" : "" ) . ($uglyIdent ? str_repeat("&nbsp;&nbsp;", $ident) : "") . h($alias) . ($ident == 1 ? "</strong>" : "" ); ?></td>
 
 			<?php foreach ($aros as $index => $aro):
-				if (!in_array($aro['Group']['id'], $groups)) :
+				if (!empty($groups) && !in_array($aro['Group']['id'], $groups)) :
 					continue;
 				endif;
 
